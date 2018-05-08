@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.util.Log
+import com.wasseemb.mal.Extensions.onScrollToEnd
 import com.wasseemb.mal.model.DisplayableItem
 import com.wasseemb.mal.ui.AnimeDetailFragment
 import com.wasseemb.mal.ui.MalViewModel
@@ -33,10 +34,12 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
   private var mTwoPane: Boolean = false
   lateinit var recyclerView: RecyclerView
   var data = ArrayList<DisplayableItem>()
+  var nextPage: String? = ""
+
 
   override fun onItemClick(item: DataItem) {
     val intent = Intent(this, AnimeDetailActivity::class.java).apply {
-      putExtra(AnimeDetailFragment.ARG_ITEM_ID, item.id)
+      putExtra(AnimeDetailFragment.ARG_ANIME_ID, item.id)
     }
     startActivity(intent)
 
@@ -70,16 +73,18 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       }
 
       override fun onQueryTextSubmit(query: String?): Boolean {
-        viewModel.search.value = query
+        viewModel.animeName.value = query
         return false
 
       }
 
     })
     fab.setOnClickListener {
-      viewModel.search.value = "Attack on titan"
+      viewModel.animeName.value = "Attack on titan"
 
     }
+    recyclerView.onScrollToEnd(recyclerView.layoutManager as GridLayoutManager,
+        { viewModel.animeUrlNextPage.value = nextPage })
   }
 
   private fun setupRecyclerView() {
@@ -90,6 +95,8 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
     adapter.itemClickListener = this
     recyclerView.adapter = adapter
     this.recyclerView = recyclerView
+//    recyclerView.onScrollToEnd(recyclerView.layoutManager as GridLayoutManager,
+//        { Log.d("Tag", nextPage) })
   }
 
   private fun observeViewModel(viewModel: MalViewModel) {
@@ -97,8 +104,25 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
     viewModel.animeSearch().observe(this, Observer<KitsuResponse> { malResponse ->
       if (malResponse != null) {
         Log.d("Data", malResponse.data?.size.toString())
-        val list = malResponse.data as List<DataItem>
-        ((recyclerView.adapter) as TrendingAdapter).itemList = list
+        val animeList = malResponse.data as List<DataItem>
+        ((recyclerView.adapter) as TrendingAdapter).itemList = animeList
+        //recyclerView.adapter.notifyDataSetChanged()
+        nextPage = malResponse.links?.next
+        Log.d("observeViewModel", "firstModel")
+        //recyclerView.adapter.notifyDataSetChanged()
+      }
+    })
+
+
+
+    viewModel.animeSearchNextPage().observe(this, Observer<KitsuResponse> { malResponse ->
+      if (malResponse != null) {
+        Log.d("Data", malResponse.data?.size.toString())
+        val animeList = malResponse.data as List<DataItem>
+        ((recyclerView.adapter) as TrendingAdapter).addToItemList(animeList)
+        nextPage = malResponse.links?.next
+        Log.d("observeViewModel", "secondModel")
+
         //recyclerView.adapter.notifyDataSetChanged()
       }
     })

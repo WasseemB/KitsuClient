@@ -3,8 +3,8 @@ package com.wasseemb.mal
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_anime_detail.detail_toolbar
 import com.wasseemb.mal.ui.AnimeDetailFragment
+import kotlinx.android.synthetic.main.activity_anime_detail.detail_toolbar
 
 
 /**
@@ -42,8 +42,8 @@ class AnimeDetailActivity : AppCompatActivity() {
       // using a fragment transaction.
       val fragment = AnimeDetailFragment().apply {
         arguments = Bundle().apply {
-          putString(AnimeDetailFragment.ARG_ITEM_ID,
-              intent.getStringExtra(AnimeDetailFragment.ARG_ITEM_ID))
+          putString(AnimeDetailFragment.ARG_ANIME_ID,
+              intent.getStringExtra(AnimeDetailFragment.ARG_ANIME_ID))
         }
       }
 

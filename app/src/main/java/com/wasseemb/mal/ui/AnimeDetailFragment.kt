@@ -14,7 +14,6 @@ import com.wasseemb.mal.Extensions.loadUrl
 import com.wasseemb.mal.Extensions.toggleLines
 import com.wasseemb.mal.R
 import com.wasseemb.mal.R.layout
-import com.wasseemb.mal.vo.Response.AnimeGenresResponse
 import com.wasseemb.mal.vo.Response.AnimeResponse
 import kotlinx.android.synthetic.main.activity_anime_detail.detail_toolbar
 import kotlinx.android.synthetic.main.anime_detail_test_3.readMore
@@ -31,21 +30,21 @@ class AnimeDetailFragment : Fragment() {
   /**
    * The dummy content this fragment is presenting.
    */
-  private var mItem: String? = null
-  private lateinit var imageView: ImageView
-  private lateinit var title: TextView
-  private lateinit var synopsis: TextView
-  private lateinit var genre: TextView
+  private var animeId: String? = null
+  private lateinit var animePosterImageView: ImageView
+  private lateinit var animeTitleTextView: TextView
+  private lateinit var animeSynopsisTextView: TextView
+  private lateinit var animeGenresTextView: TextView
 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     arguments?.let {
-      if (it.containsKey(ARG_ITEM_ID)) {
+      if (it.containsKey(ARG_ANIME_ID)) {
         // Load the dummy content specified by the fragment
         // arguments. In a real-world scenario, use a Loader
         // to load content from a content provider.
-        mItem = it.getString(ARG_ITEM_ID)
+        animeId = it.getString(ARG_ANIME_ID)
         // viewModel.id.value = mItem
 
 
@@ -58,15 +57,15 @@ class AnimeDetailFragment : Fragment() {
       savedInstanceState: Bundle?): View? {
     val rootView = inflater.inflate(layout.anime_detail_test, container, false)
 
-    imageView = rootView.findViewById(R.id.media_image)
-    title = rootView.findViewById(R.id.primary_text)
-    genre = rootView.findViewById(R.id.sub_text)
-    synopsis = rootView.findViewById(R.id.supporting_text)
+    animePosterImageView = rootView.findViewById(R.id.media_image)
+    animeTitleTextView = rootView.findViewById(R.id.primary_text)
+    animeGenresTextView = rootView.findViewById(R.id.sub_text)
+    animeSynopsisTextView = rootView.findViewById(R.id.supporting_text)
 
     val viewModel = ViewModelProviders.of(this).get(MalViewModel::class.java)
     observeViewModel(viewModel)
-    Log.d("AnimeDetailFragment", mItem + "")
-    viewModel.animeId.value = mItem
+    Log.d("AnimeDetailFragment", animeId + "")
+    viewModel.animeId.value = animeId
 
     return rootView
   }
@@ -76,18 +75,16 @@ class AnimeDetailFragment : Fragment() {
     viewModel.getAnime().observe(this, Observer<AnimeResponse> { malResponse ->
       if (malResponse != null) {
         val titleText = getTitle(malResponse)
-        title.text = titleText
+        animeTitleTextView.text = titleText
         activity?.detail_toolbar?.title = titleText
-        synopsis.text = malResponse.data.attributes.synopsis
+        animeSynopsisTextView.text = malResponse.data.attributes.synopsis
         handleReadMore()
-        imageView.loadUrl(malResponse.data.attributes.posterImage.large)
+        animePosterImageView.loadUrl(malResponse.data.attributes.posterImage.large)
       }
     })
 
     viewModel.getAnimeGenres().observe(this, Observer<String> {
-      if (it != null) {
-        genre.text = it
-      }
+      if (it != null) animeGenresTextView.text = it
     })
   }
 
@@ -96,7 +93,7 @@ class AnimeDetailFragment : Fragment() {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    const val ARG_ITEM_ID = "item_id"
+    const val ARG_ANIME_ID = "anime_id"
   }
 
 
@@ -106,13 +103,11 @@ class AnimeDetailFragment : Fragment() {
   }
 
   private fun handleReadMore() {
-    if (synopsis.lineCount < 3)
+    if (animeSynopsisTextView.lineCount < 3)
       readMore.visibility = View.GONE
     readMore.setOnClickListener {
-      if (synopsis.toggleLines())
-        readMore.text = "Read More"
-      else
-        readMore.text = "Close"
+      if (animeSynopsisTextView.toggleLines()) readMore.text = "Read More"
+      else readMore.text = "Close"
     }
   }
 

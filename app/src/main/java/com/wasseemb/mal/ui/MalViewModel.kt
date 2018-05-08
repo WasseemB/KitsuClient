@@ -12,26 +12,34 @@ import com.wasseemb.mal.vo.Response.AnimeResponse
  * Created by Wasseem on 14/03/2018.
  */
 class MalViewModel : ViewModel() {
-  private val newsRepository = MalRepository()
-  val data = MutableLiveData<String>()
+  private val malRepository = MalRepository()
+  //  val data = MutableLiveData<String>()
   var animeId = MutableLiveData<String>()
-  var search = MutableLiveData<String>()
+  var animeName = MutableLiveData<String>()
+  var animeUrlNextPage = MutableLiveData<String>()
+
 
   fun animeSearch(): LiveData<KitsuResponse> {
-    return Transformations.switchMap(search) { search ->
-      newsRepository.searchAnime(search)
+    return Transformations.switchMap(animeName) { search ->
+      malRepository.searchAnime(search)
+    }
+  }
+
+  fun animeSearchNextPage(): LiveData<KitsuResponse> {
+    return Transformations.switchMap(animeUrlNextPage) { animeUrlNextPage ->
+      malRepository.searchAnimeNextPage(animeUrlNextPage)
     }
   }
 
   fun getAnime(): LiveData<AnimeResponse> {
     return Transformations.switchMap(animeId) { animeId ->
-      newsRepository.getAnime(animeId)
+      malRepository.getAnimeById(animeId)
     }
   }
 
   fun getAnimeGenres(): LiveData<String> {
     return Transformations.switchMap(animeId) { animeId ->
-      newsRepository.getAnimeGenres(animeId)
+      malRepository.getAnimeGenres(animeId)
     }
   }
 }

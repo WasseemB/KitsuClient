@@ -26,9 +26,8 @@
       app:layout_constraintTop_toTopOf="parent"
       >
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgAnimePoster"
         android:transitionName="@string/image_transition"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,13 +48,13 @@
       android:orientation="vertical"
       android:padding="4dp"
       app:cardElevation="4dp"
-      app:layout_constraintBottom_toTopOf="@id/textCardView"
+      app:layout_constraintBottom_toTopOf="@id/cvText"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/cardView"
       app:layout_constraintTop_toTopOf="parent"
       >
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
@@ -67,7 +66,7 @@
   <android.support.v7.widget.CardView
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:id="@+id/textCardView"
+      android:id="@+id/cvText"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_margin="4dp"
@@ -80,7 +79,7 @@
       app:layout_constraintTop_toBottomOf="@id/cardView"
       >
     <TextView
-        android:id="@+id/synopsis"
+        android:id="@+id/tvSynopsis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="3"
@@ -98,8 +97,8 @@
       android:layout_marginRight="4dp"
       android:background="@color/colorPrimary"
 
-      app:layout_constraintStart_toStartOf="@+id/textCardView"
-      app:layout_constraintTop_toBottomOf="@id/textCardView"
+      app:layout_constraintStart_toStartOf="@+id/cvText"
+      app:layout_constraintTop_toBottomOf="@id/cvText"
       style="@style/Divider"
 
 

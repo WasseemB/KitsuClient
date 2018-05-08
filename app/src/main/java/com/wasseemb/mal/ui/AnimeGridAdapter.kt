@@ -10,11 +10,10 @@ import com.wasseemb.mal.AnimeListActivity
 import com.wasseemb.mal.Extensions.autoNotify
 import com.wasseemb.mal.Extensions.inflate
 import com.wasseemb.mal.Extensions.loadUrl
+import com.wasseemb.mal.R
 import com.wasseemb.mal.R.layout
 import com.wasseemb.mal.ui.TrendingAdapter.GridViewHolder
 import com.wasseemb.mal.vo.Data.DataItem
-import kotlinx.android.synthetic.main.anime_grid_content.view.imageView
-import kotlinx.android.synthetic.main.anime_grid_content.view.textView
 import kotlin.properties.Delegates
 
 
@@ -30,10 +29,18 @@ class TrendingAdapter(private val mParentActivity: AnimeListActivity,
     fun onItemClick(item: DataItem)
   }
 
+
   var itemList: List<DataItem> by Delegates.observable(
       emptyList()) { _, old, new ->
-    autoNotify(old, new) { o, n -> o == n }
+    autoNotify(old, new) { o, n -> o.id == n.id }
   }
+
+  fun addToItemList(newItemList: List<DataItem>)
+  {
+    itemList+=newItemList
+    itemList
+  }
+
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridViewHolder {
     val viewHolder = GridViewHolder(parent.inflate(layout.anime_grid_content))
@@ -56,14 +63,14 @@ class TrendingAdapter(private val mParentActivity: AnimeListActivity,
 
 
   inner class GridViewHolder(mView: View) : ViewHolder(mView) {
-    private val imageView: ImageView = mView.imageView
-    private val textView: TextView = mView.textView
+    private val animePosterImageView: ImageView = mView.findViewById(R.id.imgAnimePoster)
+    private val animeTitleTextView: TextView = mView.findViewById(R.id.tvAnimeTitle)
 
     fun bindTo(item: DataItem) {
-      imageView.loadUrl(item.attributes?.posterImage?.large)
+      animePosterImageView.loadUrl(item.attributes?.posterImage?.large)
       with(item.attributes?.titles!!)
       {
-        textView.text = en ?: enJp ?: enUs
+        animeTitleTextView.text = en ?: enJp ?: enUs
       }
     }
   }

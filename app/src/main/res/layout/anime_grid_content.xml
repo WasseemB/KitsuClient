@@ -14,13 +14,13 @@
       android:orientation="vertical"
       >
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgAnimePoster"
         android:layout_width="wrap_content"
         android:layout_height="175dp"
         android:transitionName="@string/image_transition"
         />
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvAnimeTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

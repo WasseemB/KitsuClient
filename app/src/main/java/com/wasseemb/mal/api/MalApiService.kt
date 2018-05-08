@@ -13,6 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 /**
  * Created by Wasseem on 14/03/2018.
@@ -25,8 +26,11 @@ interface MalApiService {
   @GET("edge/anime")
   fun searchAnime(@Query("filter[text]") filter: String): Observable<KitsuResponse>
 
+  @GET
+  fun searchAnimeNextPage(@Url url: String): Observable<KitsuResponse>
+
   @GET("edge/anime/{id}")
-  fun getAnime(@Path("id") id: String): Observable<AnimeResponse>
+  fun getAnimeByID(@Path("id") id: String): Observable<AnimeResponse>
 
   @GET("edge/anime/{id}/genres")
   fun getAnimeGenre(@Path("id") id: String): Observable<AnimeGenresResponse>

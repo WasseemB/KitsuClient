@@ -2,6 +2,8 @@ package com.wasseemb.mal.Extensions
 
 import android.animation.ObjectAnimator
 import android.support.v7.util.DiffUtil
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,15 @@ import com.squareup.picasso.Picasso
  * Created by Wasseem on 23/03/2018.
  */
 var toggleLinesBoolean: Boolean = true
+
+private var previousTotal = 0 // The total number of items in the dataset after the last load
+private var loading = true // True if we are still waiting for the last set of data to load.
+private var visibleThreshold = 4 // The minimum amount of items to have below your current scroll position before loading more.
+var firstVisibleItem: Int = 0
+var visibleItemCount: Int = 0
+var totalItemCount: Int = 0
+private var current_page = 1
+private val mLinearLayoutManager: LinearLayoutManager? = null
 
 fun TextView.toggleLines(): Boolean {
   if (toggleLinesBoolean) {
@@ -71,3 +82,31 @@ fun <T> RecyclerView.Adapter<*>.autoNotify(oldList: List<T>, newList: List<T>,
 inline fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
   return LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 }
+
+fun RecyclerView.onScrollToEnd(linearLayoutManager: GridLayoutManager,
+    onScrollNearEnd: (Unit) -> Unit) = addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+
+  override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+    visibleItemCount = recyclerView?.childCount!!
+    totalItemCount = linearLayoutManager.itemCount
+    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition()
+
+    if (loading) {
+      if (totalItemCount > previousTotal) {
+        loading = false
+        previousTotal = totalItemCount;
+      }
+    }
+    if (!loading && (totalItemCount - visibleItemCount)
+        <= (firstVisibleItem + visibleThreshold)) {
+      // End has been reached
+
+      // Do something
+      current_page++
+      onScrollNearEnd(Unit)
+
+      loading = true
+    }
+  }
+})
