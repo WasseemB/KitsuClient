@@ -73,7 +73,8 @@ data class Attributes(
 data class Titles(
     @Json(name = "en") val en: String,
     @Json(name = "en_jp") val enJp: String,
-    @Json(name = "ja_jp") val jaJp: String
+    @Json(name = "ja_jp") val jaJp: String,
+    @Json(name = "en_us") val enUs: String
 )
 
 data class RatingFrequencies(

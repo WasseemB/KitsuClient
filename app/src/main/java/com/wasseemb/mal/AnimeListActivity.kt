@@ -14,8 +14,8 @@ import com.wasseemb.mal.Extensions.onScrollToEnd
 import com.wasseemb.mal.model.DisplayableItem
 import com.wasseemb.mal.ui.AnimeDetailFragment
 import com.wasseemb.mal.ui.MalViewModel
-import com.wasseemb.mal.ui.TrendingAdapter
-import com.wasseemb.mal.ui.TrendingAdapter.ItemClickListener
+import com.wasseemb.mal.ui.AnimeGridAdapter
+import com.wasseemb.mal.ui.AnimeGridAdapter.ItemClickListener
 import com.wasseemb.mal.vo.Data.DataItem
 import com.wasseemb.mal.vo.Data.KitsuResponse
 import kotlinx.android.synthetic.main.activity_anime_list.fab
@@ -91,7 +91,7 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
     val recyclerView = findViewById<RecyclerView>(R.id.anime_recycler)
     val numberOfColumns = 3
     recyclerView.layoutManager = GridLayoutManager(this, numberOfColumns)
-    val adapter = TrendingAdapter(this, mTwoPane)
+    val adapter = AnimeGridAdapter(this, mTwoPane)
     adapter.itemClickListener = this
     recyclerView.adapter = adapter
     this.recyclerView = recyclerView
@@ -105,7 +105,7 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       if (malResponse != null) {
         Log.d("Data", malResponse.data?.size.toString())
         val animeList = malResponse.data as List<DataItem>
-        ((recyclerView.adapter) as TrendingAdapter).itemList = animeList
+        ((recyclerView.adapter) as AnimeGridAdapter).itemList = animeList
         //recyclerView.adapter.notifyDataSetChanged()
         nextPage = malResponse.links?.next
         Log.d("observeViewModel", "firstModel")
@@ -119,7 +119,7 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       if (malResponse != null) {
         Log.d("Data", malResponse.data?.size.toString())
         val animeList = malResponse.data as List<DataItem>
-        ((recyclerView.adapter) as TrendingAdapter).addToItemList(animeList)
+        ((recyclerView.adapter) as AnimeGridAdapter).addToItemList(animeList)
         nextPage = malResponse.links?.next
         Log.d("observeViewModel", "secondModel")
 

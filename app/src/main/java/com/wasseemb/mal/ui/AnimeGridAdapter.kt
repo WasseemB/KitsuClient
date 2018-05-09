@@ -12,7 +12,7 @@ import com.wasseemb.mal.Extensions.inflate
 import com.wasseemb.mal.Extensions.loadUrl
 import com.wasseemb.mal.R
 import com.wasseemb.mal.R.layout
-import com.wasseemb.mal.ui.TrendingAdapter.GridViewHolder
+import com.wasseemb.mal.ui.AnimeGridAdapter.GridViewHolder
 import com.wasseemb.mal.vo.Data.DataItem
 import kotlin.properties.Delegates
 
@@ -20,7 +20,7 @@ import kotlin.properties.Delegates
 /**
  * Created by Wasseem on 18/03/2018.
  */
-class TrendingAdapter(private val mParentActivity: AnimeListActivity,
+class AnimeGridAdapter(private val mParentActivity: AnimeListActivity,
     private val mTwoPane: Boolean) : RecyclerView.Adapter<GridViewHolder>() {
 
   lateinit var itemClickListener: ItemClickListener
@@ -35,9 +35,8 @@ class TrendingAdapter(private val mParentActivity: AnimeListActivity,
     autoNotify(old, new) { o, n -> o.id == n.id }
   }
 
-  fun addToItemList(newItemList: List<DataItem>)
-  {
-    itemList+=newItemList
+  fun addToItemList(newItemList: List<DataItem>) {
+    itemList += newItemList
     itemList
   }
 
@@ -70,7 +69,14 @@ class TrendingAdapter(private val mParentActivity: AnimeListActivity,
       animePosterImageView.loadUrl(item.attributes?.posterImage?.large)
       with(item.attributes?.titles!!)
       {
-        animeTitleTextView.text = en ?: enJp ?: enUs
+        animeTitleTextView.text =
+            when {
+              !en.isNullOrBlank() -> en
+              !enUs.isNullOrBlank() -> enUs
+              !enJp.isNullOrBlank() -> enJp
+              else -> jaJp
+            }
+//            en ?: enJp ?: enUs ?: jaJp
       }
     }
   }

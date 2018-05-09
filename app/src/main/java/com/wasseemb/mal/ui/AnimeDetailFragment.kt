@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.wasseemb.mal.Extensions.loadUrl
@@ -16,8 +17,6 @@ import com.wasseemb.mal.R
 import com.wasseemb.mal.R.layout
 import com.wasseemb.mal.vo.Response.AnimeResponse
 import kotlinx.android.synthetic.main.activity_anime_detail.detail_toolbar
-import kotlinx.android.synthetic.main.anime_detail_test_3.readMore
-
 
 /**
  * A fragment representing a single Anime detail screen.
@@ -35,6 +34,7 @@ class AnimeDetailFragment : Fragment() {
   private lateinit var animeTitleTextView: TextView
   private lateinit var animeSynopsisTextView: TextView
   private lateinit var animeGenresTextView: TextView
+  private lateinit var readMoreButton: Button
 
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,12 +55,13 @@ class AnimeDetailFragment : Fragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
-    val rootView = inflater.inflate(layout.anime_detail_test, container, false)
+    val rootView = inflater.inflate(layout.anime_detail, container, false)
 
     animePosterImageView = rootView.findViewById(R.id.media_image)
     animeTitleTextView = rootView.findViewById(R.id.primary_text)
     animeGenresTextView = rootView.findViewById(R.id.sub_text)
     animeSynopsisTextView = rootView.findViewById(R.id.supporting_text)
+    readMoreButton = rootView.findViewById(R.id.readMore)
 
     val viewModel = ViewModelProviders.of(this).get(MalViewModel::class.java)
     observeViewModel(viewModel)
@@ -99,15 +100,20 @@ class AnimeDetailFragment : Fragment() {
 
   private fun getTitle(malResponse: AnimeResponse): String? {
     val titleList = malResponse.data.attributes.titles
-    return titleList.en ?: titleList.enJp ?: titleList.enUs
+    return when {
+      !titleList.en.isNullOrBlank() -> titleList.en
+      !titleList.enUs.isNullOrBlank() -> titleList.enUs
+      !titleList.enJp.isNullOrBlank() -> titleList.enJp
+      else -> titleList.jaJp
+    }
   }
 
   private fun handleReadMore() {
     if (animeSynopsisTextView.lineCount < 3)
-      readMore.visibility = View.GONE
-    readMore.setOnClickListener {
-      if (animeSynopsisTextView.toggleLines()) readMore.text = "Read More"
-      else readMore.text = "Close"
+      readMoreButton.visibility = View.GONE
+    readMoreButton.setOnClickListener {
+      if (animeSynopsisTextView.toggleLines()) readMoreButton.text = "Read More"
+      else readMoreButton.text = "Close"
     }
   }
 
