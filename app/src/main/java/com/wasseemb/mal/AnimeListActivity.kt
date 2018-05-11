@@ -11,11 +11,10 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.util.Log
 import com.wasseemb.mal.Extensions.onScrollToEnd
-import com.wasseemb.mal.model.DisplayableItem
 import com.wasseemb.mal.ui.AnimeDetailFragment
-import com.wasseemb.mal.ui.MalViewModel
 import com.wasseemb.mal.ui.AnimeGridAdapter
 import com.wasseemb.mal.ui.AnimeGridAdapter.ItemClickListener
+import com.wasseemb.mal.ui.MalViewModel
 import com.wasseemb.mal.vo.Data.DataItem
 import com.wasseemb.mal.vo.Data.KitsuResponse
 import kotlinx.android.synthetic.main.activity_anime_list.fab
@@ -33,7 +32,8 @@ import kotlinx.android.synthetic.main.anime_list.anime_detail_container
 class AnimeListActivity : AppCompatActivity(), ItemClickListener {
   private var mTwoPane: Boolean = false
   lateinit var recyclerView: RecyclerView
-  var data = ArrayList<DisplayableItem>()
+  lateinit var animeGridAdapter: AnimeGridAdapter
+  lateinit var data: List<DataItem>
   var nextPage: String? = ""
 
 
@@ -91,9 +91,9 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
     val recyclerView = findViewById<RecyclerView>(R.id.anime_recycler)
     val numberOfColumns = 3
     recyclerView.layoutManager = GridLayoutManager(this, numberOfColumns)
-    val adapter = AnimeGridAdapter(this, mTwoPane)
-    adapter.itemClickListener = this
-    recyclerView.adapter = adapter
+    animeGridAdapter = AnimeGridAdapter(this, mTwoPane)
+    animeGridAdapter.itemClickListener = this
+    recyclerView.adapter = animeGridAdapter
     this.recyclerView = recyclerView
 //    recyclerView.onScrollToEnd(recyclerView.layoutManager as GridLayoutManager,
 //        { Log.d("Tag", nextPage) })
@@ -105,7 +105,8 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       if (malResponse != null) {
         Log.d("Data", malResponse.data?.size.toString())
         val animeList = malResponse.data as List<DataItem>
-        ((recyclerView.adapter) as AnimeGridAdapter).itemList = animeList
+        data = animeList
+        animeGridAdapter.submitList(animeList)
         //recyclerView.adapter.notifyDataSetChanged()
         nextPage = malResponse.links?.next
         Log.d("observeViewModel", "firstModel")
@@ -119,7 +120,9 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       if (malResponse != null) {
         Log.d("Data", malResponse.data?.size.toString())
         val animeList = malResponse.data as List<DataItem>
-        ((recyclerView.adapter) as AnimeGridAdapter).addToItemList(animeList)
+        data += animeList
+        animeGridAdapter.submitList(data)
+        //((recyclerView.adapter) as AnimeGridAdapter).addToItemList(animeList)
         nextPage = malResponse.links?.next
         Log.d("observeViewModel", "secondModel")
 
