@@ -3,20 +3,19 @@ package com.wasseemb.mal
 //import kotlinx.android.synthetic.main.activity_anime_list.toolbar
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.arch.paging.PagedList
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
-import android.util.Log
 import com.wasseemb.mal.Extensions.onScrollToEnd
 import com.wasseemb.mal.ui.AnimeDetailFragment
 import com.wasseemb.mal.ui.AnimeGridAdapter
 import com.wasseemb.mal.ui.AnimeGridAdapter.ItemClickListener
 import com.wasseemb.mal.ui.MalViewModel
 import com.wasseemb.mal.vo.Data.DataItem
-import com.wasseemb.mal.vo.Data.KitsuResponse
 import kotlinx.android.synthetic.main.activity_anime_list.fab
 import kotlinx.android.synthetic.main.anime_list.anime_detail_container
 
@@ -83,8 +82,9 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       viewModel.animeName.value = "Attack on titan"
 
     }
-    recyclerView.onScrollToEnd(recyclerView.layoutManager as GridLayoutManager,
-        { viewModel.animeUrlNextPage.value = nextPage })
+    //Replaced with PagedList
+//    recyclerView.onScrollToEnd(recyclerView.layoutManager as GridLayoutManager,
+//        { viewModel.animeUrlNextPage.value = nextPage })
   }
 
   private fun setupRecyclerView() {
@@ -95,39 +95,45 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
     animeGridAdapter.itemClickListener = this
     recyclerView.adapter = animeGridAdapter
     this.recyclerView = recyclerView
+
 //    recyclerView.onScrollToEnd(recyclerView.layoutManager as GridLayoutManager,
 //        { Log.d("Tag", nextPage) })
   }
 
   private fun observeViewModel(viewModel: MalViewModel) {
+    viewModel.posts.observe(this, Observer<PagedList<DataItem>> {
+      animeGridAdapter.submitList(it)
+    })
+
+    //Replaced with PagedList
     // Update the list when the data changes
-    viewModel.animeSearch().observe(this, Observer<KitsuResponse> { malResponse ->
-      if (malResponse != null) {
-        Log.d("Data", malResponse.data?.size.toString())
-        val animeList = malResponse.data as List<DataItem>
-        data = animeList
-        animeGridAdapter.submitList(animeList)
-        //recyclerView.adapter.notifyDataSetChanged()
-        nextPage = malResponse.links?.next
-        Log.d("observeViewModel", "firstModel")
-        //recyclerView.adapter.notifyDataSetChanged()
-      }
-    })
-
-
-
-    viewModel.animeSearchNextPage().observe(this, Observer<KitsuResponse> { malResponse ->
-      if (malResponse != null) {
-        Log.d("Data", malResponse.data?.size.toString())
-        val animeList = malResponse.data as List<DataItem>
-        data += animeList
-        animeGridAdapter.submitList(data)
-        //((recyclerView.adapter) as AnimeGridAdapter).addToItemList(animeList)
-        nextPage = malResponse.links?.next
-        Log.d("observeViewModel", "secondModel")
-
-        //recyclerView.adapter.notifyDataSetChanged()
-      }
-    })
+//    viewModel.animeSearch().observe(this, Observer<KitsuResponse> { malResponse ->
+//      if (malResponse != null) {
+//        Log.d("Data", malResponse.data?.size.toString())
+//        val animeList = malResponse.data as List<DataItem>
+//        data = animeList
+//        animeGridAdapter.submitList(animeList)
+//        //recyclerView.adapter.notifyDataSetChanged()
+//        nextPage = malResponse.links?.next
+//        Log.d("observeViewModel", "firstModel")
+//        //recyclerView.adapter.notifyDataSetChanged()
+//      }
+//    })
+//
+//
+//
+//    viewModel.animeSearchNextPage().observe(this, Observer<KitsuResponse> { malResponse ->
+//      if (malResponse != null) {
+//        Log.d("Data", malResponse.data?.size.toString())
+//        val animeList = malResponse.data as List<DataItem>
+//        data += animeList
+//        animeGridAdapter.submitList(data)
+//        //((recyclerView.adapter) as AnimeGridAdapter).addToItemList(animeList)
+//        nextPage = malResponse.links?.next
+//        Log.d("observeViewModel", "secondModel")
+//
+//        //recyclerView.adapter.notifyDataSetChanged()
+//      }
+//    })
   }
 }

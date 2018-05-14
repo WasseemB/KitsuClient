@@ -2,14 +2,16 @@ package com.wasseemb.mal.repository
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
+import android.arch.paging.LivePagedListBuilder
+import android.arch.paging.PagedList
+import android.support.annotation.MainThread
 import com.wasseemb.mal.api.MalApiService
+import com.wasseemb.mal.vo.Data.DataItem
 import com.wasseemb.mal.vo.Data.KitsuResponse
 import com.wasseemb.mal.vo.Response.AnimeGenresResponse
 import com.wasseemb.mal.vo.Response.AnimeResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
 
 /**
  * Created by Wasseem on 14/03/2018.
@@ -24,7 +26,7 @@ class MalRepository {
   private val animeGenreResult = MutableLiveData<AnimeGenresResponse>()
   private val animeGenreResultAsString = MutableLiveData<String>()
 
-//
+  //
 //  fun getTopHeadlines(id: Int): LiveData<KitsuResponse> {
 //    malApiService.getTrendingAnime().enqueue(object : retrofit2.Callback<KitsuResponse> {
 //      override fun onFailure(call: Call<KitsuResponse>?, t: Throwable?) {
@@ -38,19 +40,34 @@ class MalRepository {
 //    })
 //    return animeSearchResult
 //  }
+  @MainThread
+  fun animeSearch(search: String, pageSize: Int): LiveData<PagedList<DataItem>> {
+    val sourceFactory = MalDataSourceFactory(malApiService, search)
 
 
-  fun searchAnime(search: String): LiveData<KitsuResponse> {
-    malApiService.searchAnime(search).subscribeOn(Schedulers.io()).observeOn(
-        AndroidSchedulers.mainThread()).subscribe { animeSearchResult.value = it }
-    return animeSearchResult
+    val config = PagedList.Config.Builder()
+        .setPageSize(9)
+        .setInitialLoadSizeHint(27)
+        .setPrefetchDistance(9)
+        .setEnablePlaceholders(true)
+        .build()
+    return LivePagedListBuilder(sourceFactory, config).build()
+    // provide custom executor for network requests, otherwise it will default to
+    // Arch Components' IO pool which is also used for disk access
+
   }
-  fun searchAnimeNextPage(url: String): LiveData<KitsuResponse> {
-    malApiService.searchAnimeNextPage(url).subscribeOn(Schedulers.io()).observeOn(
-        AndroidSchedulers.mainThread()).subscribe { animeSearchResultNextPage.value = it }
-    return animeSearchResultNextPage
-  }
-
+  //Replaced with PagedList
+//  fun searchAnime(search: String): LiveData<KitsuResponse> {
+//    malApiService.searchAnime(search).subscribeOn(Schedulers.io()).observeOn(
+//        AndroidSchedulers.mainThread()).subscribe { animeSearchResult.value = it }
+//    return animeSearchResult
+//  }
+//
+//  fun searchAnimeNextPage(url: String): LiveData<KitsuResponse> {
+//    malApiService.searchAnimeNextPage(url).subscribeOn(Schedulers.io()).observeOn(
+//        AndroidSchedulers.mainThread()).subscribe { animeSearchResultNextPage.value = it }
+//    return animeSearchResultNextPage
+//  }
 
 
   fun getAnimeById(id: String): LiveData<AnimeResponse> {
