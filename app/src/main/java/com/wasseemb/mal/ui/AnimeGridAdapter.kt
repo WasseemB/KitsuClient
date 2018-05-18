@@ -20,8 +20,7 @@ import com.wasseemb.mal.vo.Data.DataItem
 /**
  * Created by Wasseem on 18/03/2018.
  */
-class AnimeGridAdapter(private val mParentActivity: AnimeListActivity,
-    private val mTwoPane: Boolean) : PagedListAdapter<DataItem, GridViewHolder>(
+class AnimeGridAdapter : PagedListAdapter<DataItem, GridViewHolder>(
     DataItemCallBack()) {
 
   lateinit var itemClickListener: ItemClickListener

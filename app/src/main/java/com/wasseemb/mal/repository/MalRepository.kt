@@ -12,6 +12,7 @@ import com.wasseemb.mal.vo.Response.AnimeGenresResponse
 import com.wasseemb.mal.vo.Response.AnimeResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.Executors
 
 /**
  * Created by Wasseem on 14/03/2018.
@@ -51,7 +52,8 @@ class MalRepository {
         .setPrefetchDistance(9)
         .setEnablePlaceholders(true)
         .build()
-    return LivePagedListBuilder(sourceFactory, config).build()
+    return LivePagedListBuilder(sourceFactory, config).setFetchExecutor(
+        Executors.newSingleThreadExecutor()).build()
     // provide custom executor for network requests, otherwise it will default to
     // Arch Components' IO pool which is also used for disk access
 

@@ -1,7 +1,6 @@
 package com.wasseemb.mal.Extensions
 
 import android.animation.ObjectAnimator
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -55,7 +54,7 @@ fun ImageView.loadUrl(url: String?) {
 
 }
 
-inline fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
+fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View {
   return LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 }
 

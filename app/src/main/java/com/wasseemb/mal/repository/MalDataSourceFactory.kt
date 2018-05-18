@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.DataSource
 import com.wasseemb.mal.api.MalApiService
 import com.wasseemb.mal.vo.Data.DataItem
-import com.wasseemb.mal.vo.Data.KitsuResponse
 
 class MalDataSourceFactory(private val malApiService: MalApiService,
     private val searchTerm: String) : DataSource.Factory<String, DataItem>() {

@@ -37,7 +37,7 @@ interface MalApiService {
 
 
   companion object {
-    private val API_URL = "https://kitsu.io/api/"
+    private const val API_URL = "https://kitsu.io/api/"
     fun create(): MalApiService {
       val logging = HttpLoggingInterceptor()
       logging.level = HttpLoggingInterceptor.Level.BODY
