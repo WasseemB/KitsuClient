@@ -44,7 +44,6 @@ class AnimeGridAdapter : PagedListAdapter<DataItem, GridViewHolder>(
     holder.bindTo(getItem(position)!!)
   }
 
-
   inner class GridViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
     private val animePosterImageView: ImageView = mView.findViewById(R.id.imgAnimePoster)
     private val animeTitleTextView: TextView = mView.findViewById(R.id.tvAnimeTitle)
@@ -60,7 +59,6 @@ class AnimeGridAdapter : PagedListAdapter<DataItem, GridViewHolder>(
               !enJp.isNullOrBlank() -> enJp
               else -> jaJp
             }
-//            en ?: enJp ?: enUs ?: jaJp
       }
     }
   }

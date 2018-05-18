@@ -38,14 +38,12 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
   lateinit var viewModel: MalViewModel
   var nextPage: String? = ""
 
-
   override fun onItemClick(item: DataItem) {
     val intent = Intent(this, AnimeDetailActivity::class.java).apply {
       putExtra(AnimeDetailFragment.ARG_ANIME_ID, item.id)
     }
     startActivity(intent)
   }
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -78,7 +76,7 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
   }
 
   private fun observeViewModel(viewModel: MalViewModel) {
-    viewModel.posts.observe(this, Observer<PagedList<DataItem>> {
+    viewModel.animeSearch().observe(this, Observer<PagedList<DataItem>> {
       animeGridAdapter.submitList(it)
     })
   }
@@ -103,9 +101,7 @@ class AnimeListActivity : AppCompatActivity(), ItemClickListener {
       true
     }
     else -> super.onOptionsItemSelected(item)
-
   }
-
 
   //Replaced with PagedList
   // Update the list when the data changes

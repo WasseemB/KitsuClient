@@ -42,10 +42,8 @@ class MalRepository {
 //    return animeSearchResult
 //  }
   @MainThread
-  fun animeSearch(search: String, pageSize: Int): LiveData<PagedList<DataItem>> {
+  fun animeSearch(search: String): LiveData<PagedList<DataItem>> {
     val sourceFactory = MalDataSourceFactory(malApiService, search)
-
-
     val config = PagedList.Config.Builder()
         .setPageSize(9)
         .setInitialLoadSizeHint(27)
@@ -54,9 +52,6 @@ class MalRepository {
         .build()
     return LivePagedListBuilder(sourceFactory, config).setFetchExecutor(
         Executors.newSingleThreadExecutor()).build()
-    // provide custom executor for network requests, otherwise it will default to
-    // Arch Components' IO pool which is also used for disk access
-
   }
   //Replaced with PagedList
 //  fun searchAnime(search: String): LiveData<KitsuResponse> {

@@ -17,10 +17,6 @@ class PagedKeyMalDataSource(private val malApiService: MalApiService,
       val data = it
       callback.onResult(data.data as List<DataItem>, data.links?.first, data.links?.next)
     }
-
-
-    // callback.onResult(data.data as List<DataItem>, data.links?.first, data.links?.next)
-
   }
 
   override fun loadAfter(params: LoadParams<String>,
